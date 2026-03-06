@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Overlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: rgba(10, 10, 14, 0.88);
+      --border: rgba(255, 255, 255, 0.07);
+      --accent: #00f5a0;
+      --accent2: #00d9f5;
+      --text: #e8e8f0;
+      --muted: rgba(232, 232, 240, 0.4);
+      --radius: 12px;
+    }
+
+    html, body {
+      width: 420px;
+      height: 600px;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'JetBrains Mono', monospace;
+      -webkit-app-region: drag;
+      user-select: none;
+    }
+
+    .shell {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+    }
+
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-dot.error {
+      background: #ff4d6d;
+      box-shadow: 0 0 8px #ff4d6d;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px;
+      -webkit-app-region: no-drag;
+    }
+
+    .phase-badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    .ping-block {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ping-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .ping-result {
+      font-size: 13px;
+      color: var(--text);
+      min-height: 18px;
+    }
+
+    .ping-result.ok { color: var(--accent); }
+    .ping-result.err { color: #ff4d6d; }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(0,245,160,0.12), rgba(0,217,245,0.08));
+      border: 1px solid rgba(0,245,160,0.25);
+      border-radius: 8px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, rgba(0,245,160,0.2), rgba(0,217,245,0.14));
+      border-color: rgba(0,245,160,0.5);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .hint {
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+    }
+
+    .hint kbd {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="titlebar">
+      <span class="brand">AI Overlay</span>
+      <div class="status-dot" id="dot"></div>
+    </div>
+
+    <div class="body">
+      <span class="phase-badge">Phase 1 — Foundation</span>
+
+      <div class="ping-block">
+        <span class="ping-label">Backend status</span>
+        <span class="ping-result" id="result">—</span>
+      </div>
+
+      <button class="btn" onclick="ping()">Ping Backend</button>
+
+      <p class="hint">
+        Press <kbd>Ctrl+Shift+H</kbd> to toggle visibility<br/>
+        This window is hidden from screen capture
+      </p>
+    </div>
+  </div>
+
+  <script>
+    async function ping() {
+      const result = document.getElementById("result");
+      const dot = document.getElementById("dot");
+      result.textContent = "Connecting...";
+      result.className = "ping-result";
+      try {
+        const res = await fetch("http://127.0.0.1:8000/health");
+        const data = await res.json();
+        result.textContent = `${data.status} — ${data.message}`;
+        result.className = "ping-result ok";
+        dot.className = "status-dot";
+      } catch {
+        result.textContent = "Backend unreachable";
+        result.className = "ping-result err";
+        dot.className = "status-dot error";
+      }
+    }
+
+    ping();
+  </script>
+</body>
+</html>
