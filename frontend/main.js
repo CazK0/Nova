@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
 const { spawn } = require("child_process");
 const path = require("path");
 
@@ -34,6 +34,8 @@ function createWindow() {
 app.whenReady().then(() => {
   startBackend();
   createWindow();
+
+  ipcMain.on("close-window", () => win.close());
 
   globalShortcut.register("CommandOrControl+Shift+H", () => {
     if (win.isVisible()) {
