@@ -6,14 +6,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@600;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: rgba(10, 10, 14, 0.88);
+      --bg: rgba(10, 10, 14, 0.92);
       --border: rgba(255, 255, 255, 0.07);
       --accent: #00f5a0;
       --accent2: #00d9f5;
@@ -24,7 +20,7 @@
 
     html, body {
       width: 420px;
-      height: 600px;
+      height: 640px;
       overflow: hidden;
       background: transparent;
       font-family: 'JetBrains Mono', monospace;
@@ -65,6 +61,8 @@
       text-transform: uppercase;
     }
 
+    .titlebar-right { display: flex; align-items: center; gap: 10px; }
+
     .status-dot {
       width: 7px;
       height: 7px;
@@ -74,10 +72,20 @@
       animation: pulse 2s ease-in-out infinite;
     }
 
-    .status-dot.error {
-      background: #ff4d6d;
-      box-shadow: 0 0 8px #ff4d6d;
+    .status-dot.error { background: #ff4d6d; box-shadow: 0 0 8px #ff4d6d; }
+
+    .close-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255,75,75,0.6);
+      border: none;
+      cursor: pointer;
+      -webkit-app-region: no-drag;
+      transition: background 0.15s;
     }
+
+    .close-btn:hover { background: #ff4d4d; }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
@@ -88,10 +96,9 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      padding: 24px;
+      gap: 12px;
+      padding: 16px;
+      overflow-y: auto;
       -webkit-app-region: no-drag;
     }
 
@@ -104,44 +111,73 @@
       border: 1px solid var(--border);
       padding: 4px 12px;
       border-radius: 100px;
+      align-self: flex-start;
     }
 
-    .ping-block {
+    .block {
       width: 100%;
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 16px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .ping-label {
+    .block-label {
       font-size: 10px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
-    .ping-result {
-      font-size: 13px;
-      color: var(--text);
-      min-height: 18px;
+    .status-text { font-size: 12px; color: var(--text); min-height: 16px; }
+    .status-text.ok { color: var(--accent); }
+    .status-text.err { color: #ff4d6d; }
+
+    .region-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
 
-    .ping-result.ok { color: var(--accent); }
-    .ping-result.err { color: #ff4d6d; }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 6px 8px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus { border-color: rgba(0,245,160,0.4); }
 
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: linear-gradient(135deg, rgba(0,245,160,0.12), rgba(0,217,245,0.08));
       border: 1px solid rgba(0,245,160,0.25);
       border-radius: 8px;
       color: var(--accent);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -154,8 +190,35 @@
       border-color: rgba(0,245,160,0.5);
     }
 
-    .btn:active {
-      transform: scale(0.98);
+    .btn:active { transform: scale(0.98); }
+
+    .btn.secondary {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    .btn.secondary:hover { background: rgba(255,255,255,0.07); color: var(--text); }
+
+    .preview-box {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-box img { width: 100%; height: 100%; object-fit: contain; }
+
+    .preview-empty {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .hint {
@@ -171,7 +234,6 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       padding: 1px 5px;
-      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       color: var(--text);
     }
@@ -181,46 +243,101 @@
   <div class="shell">
     <div class="titlebar">
       <span class="brand">AI Overlay</span>
-      <div class="status-dot" id="dot"></div>
+      <div class="titlebar-right">
+        <div class="status-dot" id="dot"></div>
+        <button class="close-btn" onclick="ipcRenderer.send('close-window')"></button>
+      </div>
     </div>
 
     <div class="body">
-      <span class="phase-badge">Phase 1 — Foundation</span>
+      <span class="phase-badge">Phase 2 — Screen Capture</span>
 
-      <div class="ping-block">
-        <span class="ping-label">Backend status</span>
-        <span class="ping-result" id="result">—</span>
+      <div class="block">
+        <span class="block-label">Backend</span>
+        <span class="status-text" id="status">Checking...</span>
       </div>
 
-      <button class="btn" onclick="ping()">Ping Backend</button>
+      <div class="block">
+        <span class="block-label">Capture Region</span>
+        <div class="region-grid">
+          <div class="field"><label>X</label><input type="number" id="rx" value="0" /></div>
+          <div class="field"><label>Y</label><input type="number" id="ry" value="0" /></div>
+          <div class="field"><label>Width</label><input type="number" id="rw" value="800" /></div>
+          <div class="field"><label>Height</label><input type="number" id="rh" value="600" /></div>
+        </div>
+        <button class="btn" onclick="captureRegion()">Capture Region</button>
+        <button class="btn secondary" onclick="captureFullscreen()">Capture Fullscreen</button>
+      </div>
 
-      <p class="hint">
-        Press <kbd>Ctrl+Shift+H</kbd> to toggle visibility<br/>
-        This window is hidden from screen capture
-      </p>
+      <div class="preview-box" id="previewBox">
+        <span class="preview-empty" id="previewEmpty">No capture yet</span>
+        <img id="preview" style="display:none" />
+      </div>
+
+      <p class="hint"><kbd>Ctrl+Shift+H</kbd> toggle &nbsp;·&nbsp; hidden from screen capture</p>
     </div>
   </div>
 
   <script>
-    async function ping() {
-      const result = document.getElementById("result");
+    const { ipcRenderer } = require("electron");
+
+    async function checkHealth() {
+      const status = document.getElementById("status");
       const dot = document.getElementById("dot");
-      result.textContent = "Connecting...";
-      result.className = "ping-result";
       try {
         const res = await fetch("http://127.0.0.1:8000/health");
         const data = await res.json();
-        result.textContent = `${data.status} — ${data.message}`;
-        result.className = "ping-result ok";
+        status.textContent = `${data.status} — ${data.message}`;
+        status.className = "status-text ok";
         dot.className = "status-dot";
       } catch {
-        result.textContent = "Backend unreachable";
-        result.className = "ping-result err";
+        status.textContent = "Backend unreachable";
+        status.className = "status-text err";
         dot.className = "status-dot error";
       }
     }
 
-    ping();
+    function showPreview(blob) {
+      const url = URL.createObjectURL(blob);
+      const img = document.getElementById("preview");
+      img.src = url;
+      img.style.display = "block";
+      document.getElementById("previewEmpty").style.display = "none";
+    }
+
+    async function captureRegion() {
+      const body = {
+        x: parseInt(document.getElementById("rx").value),
+        y: parseInt(document.getElementById("ry").value),
+        width: parseInt(document.getElementById("rw").value),
+        height: parseInt(document.getElementById("rh").value),
+      };
+      try {
+        const res = await fetch("http://127.0.0.1:8000/screenshot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const blob = await res.blob();
+        showPreview(blob);
+      } catch {
+        document.getElementById("status").textContent = "Capture failed";
+        document.getElementById("status").className = "status-text err";
+      }
+    }
+
+    async function captureFullscreen() {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/screenshot/fullscreen");
+        const blob = await res.blob();
+        showPreview(blob);
+      } catch {
+        document.getElementById("status").textContent = "Capture failed";
+        document.getElementById("status").className = "status-text err";
+      }
+    }
+
+    checkHealth();
   </script>
 </body>
 </html>
