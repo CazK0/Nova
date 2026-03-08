@@ -9,7 +9,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: rgba(10, 10, 14, 0.92);
+      --bg: rgba(10, 10, 14, 0.93);
       --border: rgba(255, 255, 255, 0.07);
       --accent: #00f5a0;
       --accent2: #00d9f5;
@@ -20,7 +20,7 @@
 
     html, body {
       width: 420px;
-      height: 640px;
+      height: 700px;
       overflow: hidden;
       background: transparent;
       font-family: 'JetBrains Mono', monospace;
@@ -73,6 +73,7 @@
     }
 
     .status-dot.error { background: #ff4d6d; box-shadow: 0 0 8px #ff4d6d; }
+    .status-dot.thinking { background: #f5c400; box-shadow: 0 0 8px #f5c400; }
 
     .close-btn {
       width: 14px;
@@ -96,8 +97,8 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      padding: 16px;
+      gap: 10px;
+      padding: 14px;
       overflow-y: auto;
       -webkit-app-region: no-drag;
     }
@@ -142,11 +143,7 @@
       gap: 8px;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
 
     .field label {
       font-size: 10px;
@@ -169,8 +166,10 @@
 
     .field input:focus { border-color: rgba(0,245,160,0.4); }
 
+    .btn-row { display: flex; gap: 8px; }
+
     .btn {
-      width: 100%;
+      flex: 1;
       padding: 10px;
       background: linear-gradient(135deg, rgba(0,245,160,0.12), rgba(0,217,245,0.08));
       border: 1px solid rgba(0,245,160,0.25);
@@ -179,7 +178,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -191,6 +190,7 @@
     }
 
     .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
     .btn.secondary {
       background: rgba(255,255,255,0.04);
@@ -199,6 +199,21 @@
     }
 
     .btn.secondary:hover { background: rgba(255,255,255,0.07); color: var(--text); }
+
+    .btn.analyze {
+      background: linear-gradient(135deg, rgba(0,217,245,0.15), rgba(0,245,160,0.08));
+      border-color: rgba(0,217,245,0.35);
+      color: var(--accent2);
+      flex: none;
+      width: 100%;
+      padding: 11px;
+      font-size: 12px;
+    }
+
+    .btn.analyze:hover {
+      background: linear-gradient(135deg, rgba(0,217,245,0.25), rgba(0,245,160,0.14));
+      border-color: rgba(0,217,245,0.6);
+    }
 
     .preview-box {
       width: 100%;
@@ -210,6 +225,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .preview-box img { width: 100%; height: 100%; object-fit: contain; }
@@ -219,6 +235,49 @@
       color: var(--muted);
       letter-spacing: 0.08em;
       text-transform: uppercase;
+    }
+
+    .response-box {
+      width: 100%;
+      min-height: 120px;
+      max-height: 220px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: text;
+      -webkit-app-region: no-drag;
+    }
+
+    .response-box.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 12px;
+      background: var(--accent);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.8s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     .hint {
@@ -250,7 +309,7 @@
     </div>
 
     <div class="body">
-      <span class="phase-badge">Phase 2 — Screen Capture</span>
+      <span class="phase-badge">Phase 3 — AI Integration</span>
 
       <div class="block">
         <span class="block-label">Backend</span>
@@ -265,21 +324,29 @@
           <div class="field"><label>Width</label><input type="number" id="rw" value="800" /></div>
           <div class="field"><label>Height</label><input type="number" id="rh" value="600" /></div>
         </div>
-        <button class="btn" onclick="captureRegion()">Capture Region</button>
-        <button class="btn secondary" onclick="captureFullscreen()">Capture Fullscreen</button>
+        <div class="btn-row">
+          <button class="btn" onclick="captureRegion()">Region</button>
+          <button class="btn secondary" onclick="captureFullscreen()">Fullscreen</button>
+        </div>
       </div>
 
-      <div class="preview-box" id="previewBox">
+      <div class="preview-box">
         <span class="preview-empty" id="previewEmpty">No capture yet</span>
         <img id="preview" style="display:none" />
       </div>
 
-      <p class="hint"><kbd>Ctrl+Shift+H</kbd> toggle &nbsp;·&nbsp; hidden from screen capture</p>
+      <button class="btn analyze" id="analyzeBtn" onclick="analyze()" disabled>Analyze with Gemini</button>
+
+      <div class="response-box empty" id="responseBox">Waiting for capture...</div>
+
+      <p class="hint"><kbd>Ctrl+Shift+S</kbd> snap &amp; analyze &nbsp;·&nbsp; <kbd>Ctrl+Shift+H</kbd> toggle</p>
     </div>
   </div>
 
   <script>
     const { ipcRenderer } = require("electron");
+
+    let lastImageB64 = null;
 
     async function checkHealth() {
       const status = document.getElementById("status");
@@ -298,11 +365,18 @@
     }
 
     function showPreview(blob) {
-      const url = URL.createObjectURL(blob);
-      const img = document.getElementById("preview");
-      img.src = url;
-      img.style.display = "block";
-      document.getElementById("previewEmpty").style.display = "none";
+      const reader = new FileReader();
+      reader.onload = () => {
+        lastImageB64 = reader.result.split(",")[1];
+        const img = document.getElementById("preview");
+        img.src = reader.result;
+        img.style.display = "block";
+        document.getElementById("previewEmpty").style.display = "none";
+        document.getElementById("analyzeBtn").disabled = false;
+        document.getElementById("responseBox").textContent = "Ready to analyze.";
+        document.getElementById("responseBox").className = "response-box";
+      };
+      reader.readAsDataURL(blob);
     }
 
     async function captureRegion() {
@@ -318,8 +392,7 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
-        const blob = await res.blob();
-        showPreview(blob);
+        showPreview(await res.blob());
       } catch {
         document.getElementById("status").textContent = "Capture failed";
         document.getElementById("status").className = "status-text err";
@@ -329,13 +402,57 @@
     async function captureFullscreen() {
       try {
         const res = await fetch("http://127.0.0.1:8000/screenshot/fullscreen");
-        const blob = await res.blob();
-        showPreview(blob);
+        showPreview(await res.blob());
       } catch {
         document.getElementById("status").textContent = "Capture failed";
         document.getElementById("status").className = "status-text err";
       }
     }
+
+    async function analyze() {
+      if (!lastImageB64) return;
+      const box = document.getElementById("responseBox");
+      const btn = document.getElementById("analyzeBtn");
+      const dot = document.getElementById("dot");
+
+      box.className = "response-box";
+      box.innerHTML = '<span class="cursor"></span>';
+      btn.disabled = true;
+      dot.className = "status-dot thinking";
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image_b64: lastImageB64 }),
+        });
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let text = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          text += decoder.decode(value, { stream: true });
+          box.innerHTML = text + '<span class="cursor"></span>';
+          box.scrollTop = box.scrollHeight;
+        }
+
+        box.innerHTML = text;
+        dot.className = "status-dot";
+      } catch {
+        box.textContent = "Analysis failed. Check your API key in .env";
+        dot.className = "status-dot error";
+      }
+
+      btn.disabled = false;
+    }
+
+    ipcRenderer.on("snap-and-analyze", async () => {
+      await captureFullscreen();
+      setTimeout(analyze, 500);
+    });
 
     checkHealth();
   </script>
