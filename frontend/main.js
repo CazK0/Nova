@@ -15,7 +15,7 @@ function startBackend() {
 function createWindow() {
   win = new BrowserWindow({
     width: 420,
-    height: 600,
+    height: 700,
     transparent: true,
     frame: false,
     alwaysOnTop: true,
@@ -43,6 +43,11 @@ app.whenReady().then(() => {
     } else {
       win.show();
     }
+  });
+
+  globalShortcut.register("CommandOrControl+Shift+S", () => {
+    win.show();
+    win.webContents.send("snap-and-analyze");
   });
 });
 
