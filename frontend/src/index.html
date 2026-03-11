@@ -5,6 +5,8 @@
   <title>Overlay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,8 +21,8 @@
     }
 
     html, body {
-      width: 420px;
-      height: 700px;
+      width: 440px;
+      height: 760px;
       overflow: hidden;
       background: transparent;
       font-family: 'JetBrains Mono', monospace;
@@ -45,7 +47,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
+      padding: 11px 14px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
@@ -61,7 +63,27 @@
       text-transform: uppercase;
     }
 
-    .titlebar-right { display: flex; align-items: center; gap: 10px; }
+    .titlebar-right { display: flex; align-items: center; gap: 8px; }
+
+    .corner-btns { display: flex; gap: 4px; }
+
+    .corner-btn {
+      width: 18px;
+      height: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: var(--muted);
+      transition: all 0.15s;
+      -webkit-app-region: no-drag;
+    }
+
+    .corner-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
 
     .status-dot {
       width: 7px;
@@ -98,7 +120,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding: 14px;
+      padding: 12px 14px;
       overflow-y: auto;
       -webkit-app-region: no-drag;
     }
@@ -120,10 +142,16 @@
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+    }
+
+    .block-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .block-label {
@@ -133,50 +161,52 @@
       color: var(--muted);
     }
 
-    .status-text { font-size: 12px; color: var(--text); min-height: 16px; }
+    .status-text { font-size: 11px; color: var(--text); }
     .status-text.ok { color: var(--accent); }
     .status-text.err { color: #ff4d6d; }
 
-    .region-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    .opacity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .field { display: flex; flex-direction: column; gap: 4px; }
+    .opacity-row input[type=range] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+    }
 
-    .field label {
+    .opacity-row input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    .opacity-val {
       font-size: 10px;
       color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      width: 30px;
+      text-align: right;
     }
-
-    .field input {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      padding: 6px 8px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-
-    .field input:focus { border-color: rgba(0,245,160,0.4); }
 
     .btn-row { display: flex; gap: 8px; }
 
     .btn {
       flex: 1;
-      padding: 10px;
+      padding: 9px;
       background: linear-gradient(135deg, rgba(0,245,160,0.12), rgba(0,217,245,0.08));
       border: 1px solid rgba(0,245,160,0.25);
       border-radius: 8px;
       color: var(--accent);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -207,13 +237,21 @@
       flex: none;
       width: 100%;
       padding: 11px;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .btn.analyze:hover {
       background: linear-gradient(135deg, rgba(0,217,245,0.25), rgba(0,245,160,0.14));
       border-color: rgba(0,217,245,0.6);
     }
+
+    .region-info {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .region-info.set { color: var(--accent); }
 
     .preview-box {
       width: 100%;
@@ -237,10 +275,32 @@
       text-transform: uppercase;
     }
 
+    .response-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .copy-btn {
+      font-size: 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+
+    .copy-btn:hover { color: var(--accent); border-color: rgba(0,245,160,0.3); }
+    .copy-btn.copied { color: var(--accent); border-color: rgba(0,245,160,0.4); }
+
     .response-box {
       width: 100%;
-      min-height: 120px;
-      max-height: 220px;
+      min-height: 140px;
+      max-height: 240px;
       background: rgba(0,0,0,0.35);
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -249,7 +309,6 @@
       font-size: 11px;
       line-height: 1.7;
       color: var(--text);
-      white-space: pre-wrap;
       word-break: break-word;
       user-select: text;
       -webkit-app-region: no-drag;
@@ -263,7 +322,24 @@
       font-size: 10px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      white-space: nowrap;
     }
+
+    .response-box pre {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 10.5px;
+    }
+
+    .response-box code:not(pre code) {
+      background: rgba(255,255,255,0.08);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 10.5px;
+    }
+
+    .response-box p { margin: 4px 0; white-space: pre-wrap; }
 
     .cursor {
       display: inline-block;
@@ -284,8 +360,8 @@
       font-size: 10px;
       color: var(--muted);
       text-align: center;
-      letter-spacing: 0.05em;
-      line-height: 1.6;
+      letter-spacing: 0.04em;
+      line-height: 1.7;
     }
 
     .hint kbd {
@@ -301,31 +377,42 @@
 <body>
   <div class="shell">
     <div class="titlebar">
-      <span class="brand">AI Overlay</span>
+      <span class="brand">Nova</span>
       <div class="titlebar-right">
+        <div class="corner-btns">
+          <button class="corner-btn" onclick="snapCorner('tl')" title="Top Left">↖</button>
+          <button class="corner-btn" onclick="snapCorner('tr')" title="Top Right">↗</button>
+          <button class="corner-btn" onclick="snapCorner('bl')" title="Bottom Left">↙</button>
+          <button class="corner-btn" onclick="snapCorner('br')" title="Bottom Right">↘</button>
+        </div>
         <div class="status-dot" id="dot"></div>
         <button class="close-btn" onclick="ipcRenderer.send('close-window')"></button>
       </div>
     </div>
 
     <div class="body">
-      <span class="phase-badge">Phase 3 — AI Integration</span>
+      <span class="phase-badge">Phase 4 — UX</span>
 
       <div class="block">
-        <span class="block-label">Backend</span>
-        <span class="status-text" id="status">Checking...</span>
+        <div class="block-row">
+          <span class="block-label">Backend</span>
+          <span class="status-text" id="status">Checking...</span>
+        </div>
+        <div class="opacity-row">
+          <span class="block-label">Opacity</span>
+          <input type="range" min="20" max="100" value="93" id="opacitySlider" oninput="setOpacity(this.value)" />
+          <span class="opacity-val" id="opacityVal">93%</span>
+        </div>
       </div>
 
       <div class="block">
-        <span class="block-label">Capture Region</span>
-        <div class="region-grid">
-          <div class="field"><label>X</label><input type="number" id="rx" value="0" /></div>
-          <div class="field"><label>Y</label><input type="number" id="ry" value="0" /></div>
-          <div class="field"><label>Width</label><input type="number" id="rw" value="800" /></div>
-          <div class="field"><label>Height</label><input type="number" id="rh" value="600" /></div>
+        <div class="block-row">
+          <span class="block-label">Capture</span>
+          <span class="region-info" id="regionInfo">No region set</span>
         </div>
         <div class="btn-row">
-          <button class="btn" onclick="captureRegion()">Region</button>
+          <button class="btn" onclick="openSelector()">Draw Region</button>
+          <button class="btn secondary" onclick="captureRegion()" id="captureBtn" disabled>Capture</button>
           <button class="btn secondary" onclick="captureFullscreen()">Fullscreen</button>
         </div>
       </div>
@@ -337,9 +424,20 @@
 
       <button class="btn analyze" id="analyzeBtn" onclick="analyze()" disabled>Analyze with Gemini</button>
 
+      <div>
+        <div class="response-header">
+          <span class="block-label">Response</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyResponse()">Copy</button>
+        </div>
+      </div>
+
       <div class="response-box empty" id="responseBox">Waiting for capture...</div>
 
-      <p class="hint"><kbd>Ctrl+Shift+S</kbd> snap &amp; analyze &nbsp;·&nbsp; <kbd>Ctrl+Shift+H</kbd> toggle</p>
+      <p class="hint">
+        <kbd>Ctrl+Shift+S</kbd> snap &amp; analyze &nbsp;·&nbsp;
+        <kbd>Ctrl+Shift+R</kbd> draw region &nbsp;·&nbsp;
+        <kbd>Ctrl+Shift+H</kbd> toggle
+      </p>
     </div>
   </div>
 
@@ -347,6 +445,8 @@
     const { ipcRenderer } = require("electron");
 
     let lastImageB64 = null;
+    let lastResponseText = "";
+    let selectedRegion = null;
 
     async function checkHealth() {
       const status = document.getElementById("status");
@@ -358,7 +458,7 @@
         status.className = "status-text ok";
         dot.className = "status-dot";
       } catch {
-        status.textContent = "Backend unreachable";
+        status.textContent = "unreachable";
         status.className = "status-text err";
         dot.className = "status-dot error";
       }
@@ -373,24 +473,63 @@
         img.style.display = "block";
         document.getElementById("previewEmpty").style.display = "none";
         document.getElementById("analyzeBtn").disabled = false;
-        document.getElementById("responseBox").textContent = "Ready to analyze.";
-        document.getElementById("responseBox").className = "response-box";
+        setResponseText("Ready to analyze.");
       };
       reader.readAsDataURL(blob);
     }
 
+    function setResponseText(text) {
+      const box = document.getElementById("responseBox");
+      box.className = "response-box";
+      box.textContent = text;
+    }
+
+    function renderMarkdown(text) {
+      const box = document.getElementById("responseBox");
+      box.className = "response-box";
+      let html = "";
+      const lines = text.split("\n");
+      let inCode = false;
+      let codeLang = "";
+      let codeLines = [];
+
+      for (const line of lines) {
+        if (line.startsWith("```")) {
+          if (!inCode) {
+            inCode = true;
+            codeLang = line.slice(3).trim() || "plaintext";
+            codeLines = [];
+          } else {
+            inCode = false;
+            const code = codeLines.join("\n");
+            const highlighted = hljs.highlight(code, { language: codeLang, ignoreIllegals: true }).value;
+            html += `<pre><code class="hljs language-${codeLang}">${highlighted}</code></pre>`;
+            codeLines = [];
+          }
+        } else if (inCode) {
+          codeLines.push(line);
+        } else {
+          const escaped = line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+          const inlined = escaped.replace(/`([^`]+)`/g, "<code>$1</code>");
+          html += `<p>${inlined}</p>`;
+        }
+      }
+
+      box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function openSelector() {
+      ipcRenderer.send("open-selector");
+    }
+
     async function captureRegion() {
-      const body = {
-        x: parseInt(document.getElementById("rx").value),
-        y: parseInt(document.getElementById("ry").value),
-        width: parseInt(document.getElementById("rw").value),
-        height: parseInt(document.getElementById("rh").value),
-      };
+      if (!selectedRegion) return;
       try {
         const res = await fetch("http://127.0.0.1:8000/screenshot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify(selectedRegion),
         });
         showPreview(await res.blob());
       } catch {
@@ -419,6 +558,7 @@
       box.innerHTML = '<span class="cursor"></span>';
       btn.disabled = true;
       dot.className = "status-dot thinking";
+      lastResponseText = "";
 
       try {
         const res = await fetch("http://127.0.0.1:8000/analyze", {
@@ -429,17 +569,16 @@
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
-        let text = "";
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
-          text += decoder.decode(value, { stream: true });
-          box.innerHTML = text + '<span class="cursor"></span>';
+          lastResponseText += decoder.decode(value, { stream: true });
+          box.innerHTML = lastResponseText + '<span class="cursor"></span>';
           box.scrollTop = box.scrollHeight;
         }
 
-        box.innerHTML = text;
+        renderMarkdown(lastResponseText);
         dot.className = "status-dot";
       } catch {
         box.textContent = "Analysis failed. Check your API key in .env";
@@ -449,12 +588,42 @@
       btn.disabled = false;
     }
 
+    function copyResponse() {
+      if (!lastResponseText) return;
+      navigator.clipboard.writeText(lastResponseText);
+      const btn = document.getElementById("copyBtn");
+      btn.textContent = "Copied!";
+      btn.className = "copy-btn copied";
+      setTimeout(() => {
+        btn.textContent = "Copy";
+        btn.className = "copy-btn";
+      }, 1500);
+    }
+
+    function snapCorner(corner) {
+      ipcRenderer.send("snap-corner", corner);
+    }
+
+    function setOpacity(val) {
+      document.getElementById("opacityVal").textContent = val + "%";
+      ipcRenderer.send("set-opacity", val / 100);
+    }
+
+    ipcRenderer.on("region-selected", (e, region) => {
+      selectedRegion = region;
+      document.getElementById("regionInfo").textContent = `${region.width} × ${region.height}`;
+      document.getElementById("regionInfo").className = "region-info set";
+      document.getElementById("captureBtn").disabled = false;
+      captureRegion();
+    });
+
     ipcRenderer.on("snap-and-analyze", async () => {
       await captureFullscreen();
-      setTimeout(analyze, 500);
+      setTimeout(analyze, 400);
     });
 
     checkHealth();
+    setInterval(checkHealth, 10000);
   </script>
 </body>
 </html>
