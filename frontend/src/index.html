@@ -115,6 +115,36 @@
       50% { opacity: 0.4; }
     }
 
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      -webkit-app-region: no-drag;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+    .panel.active { display: flex; }
+
     .body {
       flex: 1;
       display: flex;
@@ -123,18 +153,6 @@
       padding: 12px 14px;
       overflow-y: auto;
       -webkit-app-region: no-drag;
-    }
-
-    .phase-badge {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 4px 12px;
-      border-radius: 100px;
-      align-self: flex-start;
     }
 
     .block {
@@ -189,12 +207,7 @@
       cursor: pointer;
     }
 
-    .opacity-val {
-      font-size: 10px;
-      color: var(--muted);
-      width: 30px;
-      text-align: right;
-    }
+    .opacity-val { font-size: 10px; color: var(--muted); width: 30px; text-align: right; }
 
     .btn-row { display: flex; gap: 8px; }
 
@@ -245,12 +258,7 @@
       border-color: rgba(0,217,245,0.6);
     }
 
-    .region-info {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
+    .region-info { font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
     .region-info.set { color: var(--accent); }
 
     .preview-box {
@@ -279,6 +287,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 4px;
     }
 
     .copy-btn {
@@ -299,8 +308,8 @@
 
     .response-box {
       width: 100%;
-      min-height: 140px;
-      max-height: 240px;
+      min-height: 120px;
+      max-height: 200px;
       background: rgba(0,0,0,0.35);
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -325,20 +334,8 @@
       white-space: nowrap;
     }
 
-    .response-box pre {
-      margin: 6px 0;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-size: 10.5px;
-    }
-
-    .response-box code:not(pre code) {
-      background: rgba(255,255,255,0.08);
-      padding: 1px 5px;
-      border-radius: 3px;
-      font-size: 10.5px;
-    }
-
+    .response-box pre { margin: 6px 0; border-radius: 6px; overflow-x: auto; font-size: 10.5px; }
+    .response-box code:not(pre code) { background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 3px; font-size: 10.5px; }
     .response-box p { margin: 4px 0; white-space: pre-wrap; }
 
     .cursor {
@@ -372,6 +369,120 @@
       font-size: 10px;
       color: var(--text);
     }
+
+    .history-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 12px 14px;
+      overflow-y: auto;
+      -webkit-app-region: no-drag;
+    }
+
+    .history-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .history-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.02);
+      transition: border-color 0.15s;
+    }
+
+    .history-item:hover { border-color: rgba(255,255,255,0.14); }
+
+    .history-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .history-item-header:hover { background: rgba(255,255,255,0.02); }
+
+    .history-num {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+
+    .history-time {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .history-actions { display: flex; gap: 6px; align-items: center; }
+
+    .history-copy {
+      font-size: 9px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 6px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+      letter-spacing: 0.04em;
+    }
+
+    .history-copy:hover { color: var(--accent); border-color: rgba(0,245,160,0.3); }
+
+    .history-restore {
+      font-size: 9px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 6px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+      letter-spacing: 0.04em;
+    }
+
+    .history-restore:hover { color: var(--accent2); border-color: rgba(0,217,245,0.3); }
+
+    .history-body {
+      padding: 10px 12px;
+      font-size: 10.5px;
+      line-height: 1.65;
+      color: var(--text);
+      max-height: 140px;
+      overflow-y: auto;
+      word-break: break-word;
+      user-select: text;
+      -webkit-app-region: no-drag;
+    }
+
+    .history-body.collapsed { display: none; }
+    .history-body pre { margin: 4px 0; border-radius: 5px; overflow-x: auto; font-size: 10px; }
+    .history-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px; }
+    .history-body p { margin: 3px 0; white-space: pre-wrap; }
+
+    .chevron {
+      font-size: 9px;
+      color: var(--muted);
+      transition: transform 0.15s;
+      display: inline-block;
+    }
+
+    .chevron.open { transform: rotate(180deg); }
   </style>
 </head>
 <body>
@@ -380,73 +491,91 @@
       <span class="brand">Nova</span>
       <div class="titlebar-right">
         <div class="corner-btns">
-          <button class="corner-btn" onclick="snapCorner('tl')" title="Top Left">↖</button>
-          <button class="corner-btn" onclick="snapCorner('tr')" title="Top Right">↗</button>
-          <button class="corner-btn" onclick="snapCorner('bl')" title="Bottom Left">↙</button>
-          <button class="corner-btn" onclick="snapCorner('br')" title="Bottom Right">↘</button>
+          <button class="corner-btn" onclick="snapCorner('tl')">↖</button>
+          <button class="corner-btn" onclick="snapCorner('tr')">↗</button>
+          <button class="corner-btn" onclick="snapCorner('bl')">↙</button>
+          <button class="corner-btn" onclick="snapCorner('br')">↘</button>
         </div>
         <div class="status-dot" id="dot"></div>
         <button class="close-btn" onclick="ipcRenderer.send('close-window')"></button>
       </div>
     </div>
 
-    <div class="body">
-      <span class="phase-badge">Phase 4 — UX</span>
+    <div class="tabs">
+      <button class="tab active" id="tab-main" onclick="switchTab('main')">Main</button>
+      <button class="tab" id="tab-history" onclick="switchTab('history')">History <span id="historyCount"></span></button>
+    </div>
 
-      <div class="block">
-        <div class="block-row">
-          <span class="block-label">Backend</span>
-          <span class="status-text" id="status">Checking...</span>
+    <div class="panel active" id="panel-main">
+      <div class="body">
+        <div class="block">
+          <div class="block-row">
+            <span class="block-label">Backend</span>
+            <span class="status-text" id="status">Checking...</span>
+          </div>
+          <div class="opacity-row">
+            <span class="block-label">Opacity</span>
+            <input type="range" min="20" max="100" value="93" id="opacitySlider" oninput="setOpacity(this.value)" />
+            <span class="opacity-val" id="opacityVal">93%</span>
+          </div>
         </div>
-        <div class="opacity-row">
-          <span class="block-label">Opacity</span>
-          <input type="range" min="20" max="100" value="93" id="opacitySlider" oninput="setOpacity(this.value)" />
-          <span class="opacity-val" id="opacityVal">93%</span>
+
+        <div class="block">
+          <div class="block-row">
+            <span class="block-label">Capture</span>
+            <span class="region-info" id="regionInfo">No region set</span>
+          </div>
+          <div class="btn-row">
+            <button class="btn" onclick="openSelector()">Draw Region</button>
+            <button class="btn secondary" onclick="captureRegion()" id="captureBtn" disabled>Capture</button>
+            <button class="btn secondary" onclick="captureFullscreen()">Fullscreen</button>
+          </div>
         </div>
-      </div>
 
-      <div class="block">
-        <div class="block-row">
-          <span class="block-label">Capture</span>
-          <span class="region-info" id="regionInfo">No region set</span>
+        <div class="preview-box">
+          <span class="preview-empty" id="previewEmpty">No capture yet</span>
+          <img id="preview" style="display:none" />
         </div>
-        <div class="btn-row">
-          <button class="btn" onclick="openSelector()">Draw Region</button>
-          <button class="btn secondary" onclick="captureRegion()" id="captureBtn" disabled>Capture</button>
-          <button class="btn secondary" onclick="captureFullscreen()">Fullscreen</button>
-        </div>
-      </div>
 
-      <div class="preview-box">
-        <span class="preview-empty" id="previewEmpty">No capture yet</span>
-        <img id="preview" style="display:none" />
-      </div>
+        <button class="btn analyze" id="analyzeBtn" onclick="analyze()" disabled>Analyze with Gemini</button>
 
-      <button class="btn analyze" id="analyzeBtn" onclick="analyze()" disabled>Analyze with Gemini</button>
-
-      <div>
         <div class="response-header">
           <span class="block-label">Response</span>
           <button class="copy-btn" id="copyBtn" onclick="copyResponse()">Copy</button>
         </div>
+
+        <div class="response-box empty" id="responseBox">Waiting for capture...</div>
+
+        <p class="hint">
+          <kbd>Ctrl+Shift+S</kbd> snap &amp; analyze &nbsp;·&nbsp;
+          <kbd>Ctrl+Shift+R</kbd> draw region &nbsp;·&nbsp;
+          <kbd>Ctrl+Shift+H</kbd> toggle
+        </p>
       </div>
+    </div>
 
-      <div class="response-box empty" id="responseBox">Waiting for capture...</div>
-
-      <p class="hint">
-        <kbd>Ctrl+Shift+S</kbd> snap &amp; analyze &nbsp;·&nbsp;
-        <kbd>Ctrl+Shift+R</kbd> draw region &nbsp;·&nbsp;
-        <kbd>Ctrl+Shift+H</kbd> toggle
-      </p>
+    <div class="panel" id="panel-history">
+      <div class="history-panel" id="historyPanel">
+        <div class="history-empty" id="historyEmpty">No history yet</div>
+      </div>
     </div>
   </div>
 
   <script>
     const { ipcRenderer } = require("electron");
 
+    const MAX_HISTORY = 5;
     let lastImageB64 = null;
     let lastResponseText = "";
     let selectedRegion = null;
+    let history = [];
+
+    function switchTab(name) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.getElementById("tab-" + name).classList.add("active");
+      document.getElementById("panel-" + name).classList.add("active");
+    }
 
     async function checkHealth() {
       const status = document.getElementById("status");
@@ -473,20 +602,14 @@
         img.style.display = "block";
         document.getElementById("previewEmpty").style.display = "none";
         document.getElementById("analyzeBtn").disabled = false;
-        setResponseText("Ready to analyze.");
+        const box = document.getElementById("responseBox");
+        box.className = "response-box";
+        box.textContent = "Ready to analyze.";
       };
       reader.readAsDataURL(blob);
     }
 
-    function setResponseText(text) {
-      const box = document.getElementById("responseBox");
-      box.className = "response-box";
-      box.textContent = text;
-    }
-
-    function renderMarkdown(text) {
-      const box = document.getElementById("responseBox");
-      box.className = "response-box";
+    function markdownToHtml(text) {
       let html = "";
       const lines = text.split("\n");
       let inCode = false;
@@ -514,9 +637,71 @@
           html += `<p>${inlined}</p>`;
         }
       }
+      return html;
+    }
 
-      box.innerHTML = html;
-      box.scrollTop = box.scrollHeight;
+    function addToHistory(responseText) {
+      const now = new Date();
+      const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      history.unshift({ text: responseText, time });
+      if (history.length > MAX_HISTORY) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const panel = document.getElementById("historyPanel");
+      const empty = document.getElementById("historyEmpty");
+      const count = document.getElementById("historyCount");
+
+      count.textContent = history.length > 0 ? `(${history.length})` : "";
+
+      if (history.length === 0) {
+        empty.style.display = "flex";
+        panel.querySelectorAll(".history-item").forEach(el => el.remove());
+        return;
+      }
+
+      empty.style.display = "none";
+      panel.querySelectorAll(".history-item").forEach(el => el.remove());
+
+      history.forEach((item, i) => {
+        const el = document.createElement("div");
+        el.className = "history-item";
+        el.innerHTML = `
+          <div class="history-item-header" onclick="toggleHistory(${i}, this)">
+            <span class="history-num">#${history.length - i}</span>
+            <span class="history-time">${item.time}</span>
+            <div class="history-actions">
+              <button class="history-copy" onclick="event.stopPropagation(); copyHistory(${i}, this)">Copy</button>
+              <button class="history-restore" onclick="event.stopPropagation(); restoreHistory(${i})">Restore</button>
+              <span class="chevron open">▼</span>
+            </div>
+          </div>
+          <div class="history-body" id="hbody-${i}">${markdownToHtml(item.text)}</div>
+        `;
+        panel.appendChild(el);
+      });
+    }
+
+    function toggleHistory(i, header) {
+      const body = document.getElementById("hbody-" + i);
+      const chevron = header.querySelector(".chevron");
+      body.classList.toggle("collapsed");
+      chevron.classList.toggle("open");
+    }
+
+    function copyHistory(i, btn) {
+      navigator.clipboard.writeText(history[i].text);
+      btn.textContent = "Copied!";
+      setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+    }
+
+    function restoreHistory(i) {
+      lastResponseText = history[i].text;
+      const box = document.getElementById("responseBox");
+      box.className = "response-box";
+      box.innerHTML = markdownToHtml(lastResponseText);
+      switchTab("main");
     }
 
     function openSelector() {
@@ -578,8 +763,10 @@
           box.scrollTop = box.scrollHeight;
         }
 
-        renderMarkdown(lastResponseText);
+        box.className = "response-box";
+        box.innerHTML = markdownToHtml(lastResponseText);
         dot.className = "status-dot";
+        addToHistory(lastResponseText);
       } catch {
         box.textContent = "Analysis failed. Check your API key in .env";
         dot.className = "status-dot error";
@@ -594,10 +781,7 @@
       const btn = document.getElementById("copyBtn");
       btn.textContent = "Copied!";
       btn.className = "copy-btn copied";
-      setTimeout(() => {
-        btn.textContent = "Copy";
-        btn.className = "copy-btn";
-      }, 1500);
+      setTimeout(() => { btn.textContent = "Copy"; btn.className = "copy-btn"; }, 1500);
     }
 
     function snapCorner(corner) {
